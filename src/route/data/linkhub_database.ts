@@ -1,6 +1,6 @@
 
 
-export const db = require('better-sqlite3')("./src/route/data/data.db", {fileMustExist:true});
+export const db = require('better-sqlite3')(process.env.LINKHUB_DATABASE_PATH, {fileMustExist:true});
 db.pragma('journal_mode = WAL');
 
 import { userPublicData } from "../type/userPublicData"
