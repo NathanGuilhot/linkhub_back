@@ -24,7 +24,6 @@ const database:{
         if (!body.id) return undefined;
         if (!body.email) return undefined;
         if (!body.password) return undefined;
-        console.log(body)
 
         const default_data:userPublicData = {
             name: body.id,
@@ -35,9 +34,7 @@ const database:{
             sub_end:0
         }
 
-        //TODO(Nighten) CHANGE THIS LATER
-        const hashed_password = bcrypt.hashSync(body.password, 10);
-
+        const hashed_password = bcrypt.hashSync(body.password, 11);
         
         const sql = "INSERT INTO users (id, name, avatar, tagline, bgcolor, links, email, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         try{
@@ -57,13 +54,9 @@ const database:{
     login: (body)=>{
         
         const sql = "SELECT * from users WHERE email = ?";
-        console.log(body)
         let res = db.prepare(sql).get([body.email])
         if (res===undefined) return undefined;
-        console.log(res)
 
-        
-        //TODO IMPLEMENT PROPER HASH CHECKS
         const isPasswordMatching = bcrypt.compareSync(body.password, res.password)
         if (!isPasswordMatching) return undefined
         
@@ -116,9 +109,7 @@ const database:{
         const sql = "UPDATE users SET (name, avatar, tagline, bgcolor, links) = (?, ?, ?, ?, ?) WHERE id = ?;"
         try{
             const links_text = JSON.stringify({links:body.links});
-            console.log(links_text)
             const rows = db.prepare(sql).run([body.name, body.avatar, body.tagline, body.bgcolor, links_text, identifier.id]);
-            console.log(rows);
             if (rows.changes == 0) return false;
             return true;
         } catch (error) {
@@ -135,13 +126,11 @@ const database:{
 }
 
 async function StripeCreateCustomer(pEmail:string, pId:string){
-    console.log("=== Create Stripe Costumer")
     try{
         const customer = await stripe.customers.create({
             email: pEmail,
             description: 'New Customer'
         });
-        // console.log(customer)
 
         const sql = "UPDATE users SET (stripe_id) = ? WHERE id = ?"
         db.prepare(sql).run([customer.id, pId]);

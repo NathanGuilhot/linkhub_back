@@ -88,7 +88,4 @@ linkhubRouter.post('/upload', async (req, res)=>{
     
     //SEND THE DATABASE BACK
     res.json({filename:filename})
-    // const user_public_data:userPublicData|boolean = database.get(user_id);
-    // if (user_public_data===false) {res.status(StatusCodes.NOT_FOUND).json({ERROR:"USER NOT FOUND"}); return}
-    // res.status(StatusCodes.OK).json(user_public_data) 
 })
